@@ -3,13 +3,13 @@ import { Camera, Plus, Trash2, Printer, Phone, Mail, Instagram } from 'lucide-re
 
 const App = () => {
   // --- Estados do Formulário ---
-  const [clientName, setClientName] = useState('Digite aqui: ');
-  const [modelName, setModelName] = useState('Digite aqui: ');
-  const [creatorName, setCreatorName] = useState('Digite aqui: ');
-  const [quantity, setQuantity] = useState(7);
-  const [unitPrice, setUnitPrice] = useState(30.00);
+  const [clientName, setClientName] = useState('');
+  const [modelName, setModelName] = useState('');
+  const [creatorName, setCreatorName] = useState('');
+  const [quantity, setQuantity] = useState(1);
+  const [unitPrice, setUnitPrice] = useState(40.00);
   const [selectedSize, setSelectedSize] = useState('M'); // PP, P, M, G, XG
-  const [sendDate, setSendDate] = useState("11/02/2026"); // Data atual como padrão
+  const [sendDate, setSendDate] = useState(new Date().toISOString().split('T')[0]); // Data atual como padrão
   const [imageSrc, setImageSrc] = useState(null);
   
   // Lista de itens extras na descrição
@@ -20,7 +20,7 @@ const App = () => {
 
   // Contatos fixos
   const [contact, setContact] = useState({
-    phone: '(83) 9 9391-3523',
+    phone: '(83) 99391-3523',
     email: 'imaginehub.oficial@gmail.com',
     instagram: '@imagine.hub_'
   });
@@ -87,49 +87,74 @@ const App = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
         
-        /* Garante que a fonte seja aplicada em tudo dentro do preview */
         .font-bebas {
           font-family: 'Bebas Neue', sans-serif !important;
         }
 
-        /* Estilo para impressão exata */
+        /* CORREÇÃO DA IMPRESSÃO A4 */
         @media print {
           @page { 
-            size: A4; 
+            size: auto;
             margin: 0; 
           }
-          body { 
-            background: white;
-            -webkit-print-color-adjust: exact !important; 
-            print-color-adjust: exact !important; 
+          
+          /* Força impressão de cores de fundo */
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
-          /* Esconde tudo que não for a área de impressão */
-          body > *:not(.print-container) { 
-            display: none !important; 
+          
+          /* Esconde interface */
+          body * {
+            visibility: hidden;
           }
-          /* Força a exibição do container de impressão */
+
+          /* Reseta body */
+          body, html, #root {
+            background-color: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100%;
+            height: 100%;
+            overflow: visible !important;
+          }
+
+          /* Mostra container de impressão */
+          .print-container, .print-container * {
+            visibility: visible;
+          }
+
+          /* Posiciona container */
           .print-container {
-            display: flex !important;
-            width: 100% !important;
-            height: 100% !important;
             position: absolute !important;
             top: 0 !important;
             left: 0 !important;
+            width: 100% !important;
+            min-height: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
             background-color: #FFF5F7 !important;
             z-index: 9999;
+            display: flex !important;
+            flex-direction: column;
+            justify-content: flex-start; /* Mantém itens unidos no topo */
           }
-          /* Ajustes de layout para impressão */
+
           .print-area {
             box-shadow: none !important;
             width: 100% !important;
-            min-height: 100vh !important;
+            height: auto !important; /* Altura flexível */
+            min-height: 100% !important;
+            transform: none !important;
+          }
+
+          .no-print {
+            display: none !important;
           }
         }
       `}</style>
 
-      {/* --- PAINEL DE CONTROLE (Esquerda - Não aparece na impressão) --- */}
+      {/* --- PAINEL DE CONTROLE --- */}
       <div className="w-full lg:w-1/3 bg-white p-6 rounded-xl shadow-lg h-fit no-print overflow-y-auto max-h-screen">
         <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">Editar Pedido</h2>
 
@@ -281,105 +306,92 @@ const App = () => {
       {/* --- PREVIEW / ÁREA DE IMPRESSÃO (Direita) --- */}
       <div className="print-container flex-1 flex justify-center overflow-auto bg-gray-200/50 p-4 lg:p-8">
         
-        {/* Container A4/Poster */}
-        <div className="print-area bg-[#FFF5F7] relative shadow-2xl flex flex-col justify-between overflow-hidden font-bebas"
+        {/* Container Customizado - Proporção A4 (1/1.414) */}
+        <div className="print-area bg-[#FFF5F7] relative shadow-2xl flex flex-col font-bebas overflow-hidden"
              style={{ 
                width: '595px', 
-               minHeight: '842px', 
-               aspectRatio: '1/1.414',
+               minHeight: '842px', // Altura padrão A4 para preview
+               aspectRatio: '1/1.413',
+               position: 'relative',
              }}>
           
-          {/* Fundo Verde Central */}
+          {/* Fundo Verde Central - Ajustado para ir até atrás da imagem */}
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-[160px] h-[65%] bg-[#00FF55] z-0"></div>
 
           {/* === HEADER === */}
-          {/* --- TÍTULO IMAGINE (Editável para Alinhamento) --- */}
-          {/* Se precisar ajustar o alinhamento, altere as classes 'text-center' ou 'pt-8' abaixo */}
-          <div className="relative z-10 w-full text-center pt-8">
-            <h1 className="text-[130px] align-middle leading-[0.8] -tracking-wide text-[#333]">
+          <div className="relative z-10 w-full text-center pt-8 mb-4">
+            <h1 className="text-[130px] leading-[0.8] -tracking-wide text-[#333]">
               IMAGINE
             </h1>
-            <p className="text-3xl align-middle tracking-[0.2em] text-[#444] mt-[-14px]">
+            <p className="text-3xl tracking-[0.2em] text-[#444] mt-[-14px]">
               ORÇAMENTO DE PEDIDO
             </p>
           </div>
 
-          {/* === CONTEÚDO CENTRAL === */}
-          <div className="relative z-10 flex-1 w-full flex flex-col">
+          {/* === CORPO PRINCIPAL (Layout Fluido e Unido) === */}
+          <div className="relative z-10 w-full flex-1 flex flex-col">
             
-            {/* Informações Superiores (Modelo e Cliente) */}
-            {/* --- POSIÇÃO DO MODELO/CLIENTE (Editável) --- */}
-            {/* Ajuste o 'px-4' para mudar a distância da lateral */}
-            <div className="flex justify-between items-start px-4 mt-12 w-full">
+            {/* Linha Superior: Info e Imagem */}
+            <div className="relative w-full flex-1 min-h-0 flex flex-col px-2">
               
-              {/* Esquerda: Modelo */}
-              <div className="text-left max-w-[40%]">
-                <h2 className="text-4xl leading-none text-[#444] uppercase mb-2">
+              {/* Infos Laterais (Posicionadas absolutamente em relação a este container flexível) */}
+              <div className="absolute left-0 top-0 text-left max-w-[35%] z-20 px-2">
+                <h2 className="text-4xl leading-none text-[#444] uppercase mb-2 break-words">
                   {modelName}
                 </h2>
                 <div className="text-xl text-gray-500 uppercase font-light leading-none">
-                  <span className="text-gray-400 text-2xl">CRIADOR:</span><br/>
-                  <span className="text-3xl text-gray-600">{creatorName}</span>
+                  <span className="text-gray-500 text-2xl">CRIADOR:</span><br/>
+                  <span className="text-3xl text-[#444] break-words">{creatorName}</span>
                 </div>
               </div>
 
-              {/* Centro: Imagem */}
-              {/* Aumentei o z-index para 0 para ficar atrás do texto se necessário, ou ajuste conforme preferência */}
-              <div className="absolute left-1/2 top-20 transform -translate-x-1/2 w-[400px] h-[450px] flex items-center justify-center pointer-events-none z-0">
-                {imageSrc ? (
+              <div className="absolute right-0 top-0 text-right max-w-[35%] z-20 px-2">
+                <h2 className="text-3xl text-gray-500 uppercase mb-1">
+                  CLIENTE
+                </h2>
+                <p className="text-4xl text-[#444] uppercase leading-none break-words">
+                  {clientName}
+                </p>
+              </div>
+
+              {/* Imagem Centralizada e Maximizada no espaço disponível */}
+              <div className="flex-1 flex items-center justify-center pt-15 pb-0">
+                 {imageSrc ? (
                   <img 
                     src={imageSrc} 
                     alt="Produto" 
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-contain max-h-[500px] z-0" 
                     style={{ filter: 'drop-shadow(5px 10px 15px rgba(0,0,0,0.4))' }}
                   />
                 ) : (
-                  <div className="text-center text-gray-400 opacity-50 text-2xl">
+                  <div className="text-center text-gray-400 opacity-50 text-2xl h-64 flex items-center">
                     [Sem Imagem]
                   </div>
                 )}
               </div>
-
-              {/* Direita: Cliente */}
-              <div className="text-right max-w-[35%] relative z-10">
-                <h2 className="text-4xl text-[#444] uppercase mb-1">
-                  CLIENTE
-                </h2>
-                <p className="text-5xl text-gray-500 uppercase leading-none break-words">
-                  {clientName}
-                </p>
-              </div>
+                <div className="absolute right-1 bottom-3 text-right z-9 px-2 pb-20">
+                    <p className="text-xl text-gray-500 mb-0 leading-none">DATA DE ENVIO</p>
+                    <p className="text-3xl text-[#333] leading-none">{formatDate(sendDate)}</p>
+                </div>
             </div>
 
-            {/* Espaçador para empurrar o resto para baixo */}
-            <div className="flex-grow"></div>
+            
 
-            {/* Data de Envio (Reposicionada mais para cima) */}
-            {/* Ajuste o 'bottom-[xxx]' para subir ou descer a data */}
-            <div className="absolute bottom-[350px] right-6 text-right z-20">
-               <p className="text-xl text-gray-500 mb-0 leading-none">DATA DE ENVIO</p>
-               <p className="text-3xl text-[#333] leading-none">{formatDate(sendDate)}</p>
-            </div>
-
-            {/* === ÁREA INFERIOR (Grid de Info) === */}
-            {/* Reduzi o padding lateral para px-4 (era px-8) para aproximar da margem */}
-            <div className="w-full pt-2 px-4 relative z-20 bg-gradient-to-b from-[#FFF5F7]">
-              <div className="flex gap-4 items-end">
+            {/* === ÁREA INFERIOR (Grid Compacto) === */}
+            <div className="w-full relative bg-[#FFF5F7] px-2 -mt-20 z-100">
+              <div className="flex gap-2 items-end border-t border-gray-200 pt-1">
                 
                 {/* COLUNA ESQUERDA: Descrições e Totais */}
-                <div className="flex-1">
+                <div className="flex-1 my-2">
                   
-                  {/* Tabela de Descrições (Sem texto vertical) */}
+                  {/* Tabela de Descrições */}
                   <div className="flex items-stretch mb-6">
                     <div className="flex-1">
-                      {/* Cabeçalho */}
-                      <div className="bg-[#444] text-white flex text-lg px-2 py-1">
+                      <div className="bg-[#444] text-white flex text-lg">
                         <span className="flex-1 text-center border-r border-gray-500 pl-2">DESCRIÇÃO</span>
                         <span className="w-32 text-center">VALORES (R$)</span>
                       </div>
-                      
-                      {/* Linhas */}
-                      <div className="border-l border-r border-b border-gray-300 bg-white/80 min-h-[80px]">
+                      <div className="border-l border-r border-b border-gray-300 bg-white/80 min-h-[60px]">
                         {extras.map((item, idx) => (
                           <div key={idx} className="flex text-xl border-b border-gray-100 last:border-0 items-center">
                             <span className="flex-1 px-3 py-1 text-gray-700 uppercase">{item.description}</span>
@@ -393,22 +405,22 @@ const App = () => {
                   </div>
 
                   {/* Totais */}
-                  <div className="space-y-1 ml-auto w-full max-w-[400px]">
+                  <div className="space-y-1 my-2 ml-auto w-full max-w-[400px]">
                     <div className="flex items-center justify-start">
-                       <span className="text-4xl text-gray-500 text-right pr-10">QUANTIDADE</span>
-                       <div className="border border-gray-400 w-40 text-center text-3xl py-0.5 bg-white text-gray-700">
+                       <span className="text-4xl text-gray-700 text-right pr-10">QUANTIDADE</span>
+                       <div className="border border-gray-400 w-40 text-center text-3xl py-0.5 bg-white text-gray-500">
                          {quantity}
                        </div>
                     </div>
                     <div className="flex items-center justify-start">
-                       <span className="text-4xl text-gray-500 text-right pr-11">PREÇO UNIT.</span>
-                       <div className="border border-gray-400 w-40 text-center text-3xl py-0.5 bg-white font-bold text-gray-700">
+                       <span className="text-4xl text-gray-700 text-right pr-11">PREÇO UNIT.</span>
+                       <div className="border border-gray-400 w-40 text-center text-3xl py-0.5 bg-white text-gray-500">
                          R$ {unitPrice.toFixed(2).replace('.', ',')}
                        </div>
                     </div>
                     <div className="flex items-center justify-start">
-                       <span className="text-4xl text-gray-500 text-right pr-9">VALOR TOTAL</span>
-                       <div className="border border-gray-400 w-40 text-center text-3xl py-0.5 bg-white font-bold text-gray-700">
+                       <span className="text-4xl text-gray-700 text-right pr-9">VALOR TOTAL</span>
+                       <div className="border border-gray-400 w-40 text-center text-3xl py-0.5 bg-white text-gray-500">
                          {formatCurrency(calculateTotal())}
                        </div>
                     </div>
@@ -417,8 +429,8 @@ const App = () => {
                 </div>
 
                 {/* COLUNA DIREITA: Tamanhos */}
-                <div className="w-[160px] border-l border-black pl-4 pb-1">
-                  <h3 className="text-5xl text-[#333] text-center mb-2 leading-none">TAMANHO</h3>
+                <div className="w-[160px] border-l border-[#333] pb-2">
+                  <h3 className="text-5xl text-[#333] text-center align-middle mb-2 leading-none">TAMANHO</h3>
                   
                   <div className="flex flex-col gap-1">
                     {sizes.map((size) => {
@@ -432,7 +444,7 @@ const App = () => {
                               text-2xl cursor-pointer
                               ${isSelected ? 'bg-[#333] text-white' : 'text-[#333] bg-transparent'}
                             `}
-                            onClick={() => setSelectedSize(size.label)} // Adicionei clique aqui também
+                            onClick={() => setSelectedSize(size.label)}
                           >
                             {size.label}
                           </div>
@@ -445,8 +457,8 @@ const App = () => {
               </div>
             </div>
 
-            {/* === FOOTER (Ícones Corrigidos) === */}
-            <div className="bg-[#333] w-full py-3 px-6 flex justify-between items-center mt-2 z-20">
+            {/* === FOOTER === */}
+            <div className="bg-[#333] w-full flex justify-between items-center mt-auto z-20 px-2">
                <div className="flex items-center gap-2 text-white tracking-wide text-xl">
                  <Phone size={24} strokeWidth={2.5} /> 
                  <span className="mt-1">{contact.phone}</span>

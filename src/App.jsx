@@ -3,9 +3,9 @@ import { Camera, Plus, Trash2, Printer, Phone, Mail, Instagram } from 'lucide-re
 
 const App = () => {
   // --- Estados do Formulário ---
-  const [clientName, setClientName] = useState('');
-  const [modelName, setModelName] = useState('');
-  const [creatorName, setCreatorName] = useState('');
+  const [clientName, setClientName] = useState('Wedson');
+  const [modelName, setModelName] = useState('Raposa Pequeno Príncipe');
+  const [creatorName, setCreatorName] = useState('Giovanni');
   const [quantity, setQuantity] = useState(1);
   const [unitPrice, setUnitPrice] = useState(40.00);
   const [selectedSize, setSelectedSize] = useState('M'); // PP, P, M, G, XG
@@ -94,8 +94,8 @@ const App = () => {
         /* CORREÇÃO DA IMPRESSÃO A4 */
         @media print {
           @page { 
-            size: auto;
-            margin: 0; 
+            size: A4; 
+            margin: 0; /* Margem zero para usar a folha toda */
           }
           
           /* Força impressão de cores de fundo */
@@ -130,22 +130,19 @@ const App = () => {
             top: 0 !important;
             left: 0 !important;
             width: 100% !important;
-            min-height: 100% !important;
+            height: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
             background-color: #FFF5F7 !important;
             z-index: 9999;
             display: flex !important;
-            flex-direction: column;
-            justify-content: flex-start; /* Mantém itens unidos no topo */
+            justify-content: flex-start; 
           }
 
           .print-area {
-            box-shadow: none !important;
-            width: 100% !important;
-            height: auto !important; /* Altura flexível */
-            min-height: 100% !important;
-            transform: none !important;
+            width: max-content !important; /* Largura A4 */
+            aspect-ratio: 1/1.414 !important;
+            margin: auto !important;
           }
 
           .no-print {
@@ -334,7 +331,7 @@ const App = () => {
             {/* Linha Superior: Info e Imagem */}
             <div className="relative w-full flex-1 min-h-0 flex flex-col px-2">
               
-              {/* Infos Laterais (Posicionadas absolutamente em relação a este container flexível) */}
+              {/* Infos Laterais */}
               <div className="absolute left-0 top-0 text-left max-w-[35%] z-20 px-2">
                 <h2 className="text-4xl leading-none text-[#444] uppercase mb-2 break-words">
                   {modelName}
@@ -354,13 +351,14 @@ const App = () => {
                 </p>
               </div>
 
-              {/* Imagem Centralizada e Maximizada no espaço disponível */}
+              {/* Imagem Centralizada */}
               <div className="flex-1 flex items-center justify-center pt-15 pb-0">
                  {imageSrc ? (
                   <img 
                     src={imageSrc} 
                     alt="Produto" 
-                    className="w-full h-full object-contain max-h-[500px] z-0" 
+                    // Mantive a altura máxima em 380px para garantir que caiba verticalmente
+                    className="w-full h-full object-contain max-h-[380px] z-0" 
                     style={{ filter: 'drop-shadow(5px 10px 15px rgba(0,0,0,0.4))' }}
                   />
                 ) : (
@@ -374,8 +372,6 @@ const App = () => {
                     <p className="text-3xl text-[#333] leading-none">{formatDate(sendDate)}</p>
                 </div>
             </div>
-
-            
 
             {/* === ÁREA INFERIOR (Grid Compacto) === */}
             <div className="w-full relative bg-[#FFF5F7] px-2 -mt-20 z-100">
@@ -405,22 +401,22 @@ const App = () => {
                   </div>
 
                   {/* Totais */}
-                  <div className="space-y-1 my-2 ml-auto w-full max-w-[400px]">
-                    <div className="flex items-center justify-start">
-                       <span className="text-4xl text-gray-700 text-right pr-10">QUANTIDADE</span>
-                       <div className="border border-gray-400 w-40 text-center text-3xl py-0.5 bg-white text-gray-500">
+                  <div className="space-y-1 my-2 ml-auto w-full max-w-[400px] pr-5">
+                    <div className="flex items-center justify-between gap-2">
+                       <span className="text-4xl text-gray-700 text-left">QUANTIDADE</span>
+                       <div className="border border-gray-400 w-40 text-center text-3xl py-1 bg-white text-gray-500">
                          {quantity}
                        </div>
                     </div>
-                    <div className="flex items-center justify-start">
-                       <span className="text-4xl text-gray-700 text-right pr-11">PREÇO UNIT.</span>
-                       <div className="border border-gray-400 w-40 text-center text-3xl py-0.5 bg-white text-gray-500">
+                    <div className="flex items-center justify-between gap-2">
+                       <span className="text-4xl text-gray-700 text-left">PREÇO UNIT.</span>
+                       <div className="border border-gray-400 w-40 text-center text-3xl py-1 bg-white text-gray-500">
                          R$ {unitPrice.toFixed(2).replace('.', ',')}
                        </div>
                     </div>
-                    <div className="flex items-center justify-start">
-                       <span className="text-4xl text-gray-700 text-right pr-9">VALOR TOTAL</span>
-                       <div className="border border-gray-400 w-40 text-center text-3xl py-0.5 bg-white text-gray-500">
+                    <div className="flex items-center justify-between gap-2">
+                       <span className="text-4xl text-gray-700 text-left">VALOR TOTAL</span>
+                       <div className="border border-gray-400 w-40 text-center text-3xl py-1 bg-white text-gray-500">
                          {formatCurrency(calculateTotal())}
                        </div>
                     </div>
@@ -429,7 +425,7 @@ const App = () => {
                 </div>
 
                 {/* COLUNA DIREITA: Tamanhos */}
-                <div className="w-[160px] border-l border-[#333] pb-2">
+                <div className="w-[200px] border-l border-[#333] pb-2">
                   <h3 className="text-5xl text-[#333] text-center align-middle mb-2 leading-none">TAMANHO</h3>
                   
                   <div className="flex flex-col gap-1">

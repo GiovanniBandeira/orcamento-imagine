@@ -95,7 +95,14 @@ const App = () => {
         @media print {
           @page { 
             size: A4; 
-            margin: 0; /* Margem zero para usar a folha toda */
+            margin: 0; /* Remove margens do navegador */
+          }
+          
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 210mm;
+            height: 297mm;
           }
           
           /* Força impressão de cores de fundo */
@@ -112,11 +119,7 @@ const App = () => {
           /* Reseta body */
           body, html, #root {
             background-color: white !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            width: 100%;
-            height: 100%;
-            overflow: visible !important;
+            overflow: hidden !important; /* Evita scrollbars na impressão */
           }
 
           /* Mostra container de impressão */
@@ -124,25 +127,32 @@ const App = () => {
             visibility: visible;
           }
 
-          /* Posiciona container */
+          /* Posiciona container no topo absoluto */
           .print-container {
             position: absolute !important;
             top: 0 !important;
             left: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
+            width: 210mm !important; /* Largura A4 */
+            height: 297mm !important; /* Altura A4 */
             margin: 0 !important;
             padding: 0 !important;
             background-color: #FFF5F7 !important;
             z-index: 9999;
-            display: flex !important;
-            justify-content: flex-start; 
+            display: block !important;
           }
 
           .print-area {
-            width: max-content !important; /* Largura A4 */
-            aspect-ratio: 1/1.414 !important;
-            margin: auto !important;
+            box-shadow: none !important;
+            /* Mantemos a largura base do design (595px) */
+            width: 595px !important;
+            height: 842px !important; /* Altura base proporcional */
+            min-height: 842px !important;
+            margin: 0 !important;
+            
+            /* --- O SEGREDO DA ESCALA --- */
+            /* Escala de 595px para 210mm (aprox 794px) = 1.333 */
+            transform: scale(1.333333) !important;
+            transform-origin: top left !important; /* Expande do canto superior esquerdo */
           }
 
           .no-print {
@@ -320,7 +330,7 @@ const App = () => {
             <h1 className="text-[130px] leading-[0.8] -tracking-wide text-[#333]">
               IMAGINE
             </h1>
-            <p className="text-3xl tracking-[0.2em] text-[#444] mt-[-14px]">
+            <p className="text-4xl tracking-[0.23em] text-[#444] mt-[-15px] ml-4">
               ORÇAMENTO DE PEDIDO
             </p>
           </div>
@@ -332,21 +342,21 @@ const App = () => {
             <div className="relative w-full flex-1 min-h-0 flex flex-col px-2">
               
               {/* Infos Laterais */}
-              <div className="absolute left-0 top-0 text-left max-w-[35%] z-20 px-2">
-                <h2 className="text-4xl leading-none text-[#444] uppercase mb-2 break-words">
+              <div className="absolute left-0 top-0 text-left max-w-[35%] z-20 px-2 py-5 pt-10">
+                <h2 className="text-5xl leading-none text-[#444] uppercase mb-2 break-words">
                   {modelName}
                 </h2>
-                <div className="text-xl text-gray-500 uppercase font-light leading-none">
-                  <span className="text-gray-500 text-2xl">CRIADOR:</span><br/>
-                  <span className="text-3xl text-[#444] break-words">{creatorName}</span>
+                <div className="text-xl text-gray-500 uppercase font-light leading-none pt-20">
+                  <span className="text-gray-500 text-4xl">CRIADOR:</span><br/>
+                  <span className="text-5xl text-[#444] break-words">{creatorName}</span>
                 </div>
               </div>
 
-              <div className="absolute right-0 top-0 text-right max-w-[35%] z-20 px-2">
-                <h2 className="text-3xl text-gray-500 uppercase mb-1">
+              <div className="absolute right-0 top-0 text-right max-w-[35%] z-20 px-2 pt-20">
+                <h2 className="text-4xl text-gray-500 uppercase mb-1">
                   CLIENTE
                 </h2>
-                <p className="text-4xl text-[#444] uppercase leading-none break-words">
+                <p className="text-6xl text-[#444] uppercase leading-none break-words">
                   {clientName}
                 </p>
               </div>
@@ -357,7 +367,6 @@ const App = () => {
                   <img 
                     src={imageSrc} 
                     alt="Produto" 
-                    // Mantive a altura máxima em 380px para garantir que caiba verticalmente
                     className="w-full h-full object-contain max-h-[380px] z-0" 
                     style={{ filter: 'drop-shadow(5px 10px 15px rgba(0,0,0,0.4))' }}
                   />
@@ -368,17 +377,17 @@ const App = () => {
                 )}
               </div>
                 <div className="absolute right-1 bottom-3 text-right z-9 px-2 pb-20">
-                    <p className="text-xl text-gray-500 mb-0 leading-none">DATA DE ENVIO</p>
-                    <p className="text-3xl text-[#333] leading-none">{formatDate(sendDate)}</p>
+                    <p className="text-3xl text-gray-500 mb-0 leading-none">DATA DE ENVIO</p>
+                    <p className="text-4xl text-[#333] leading-none">{formatDate(sendDate)}</p>
                 </div>
             </div>
 
             {/* === ÁREA INFERIOR (Grid Compacto) === */}
-            <div className="w-full relative bg-[#FFF5F7] px-2 -mt-20 z-100">
-              <div className="flex gap-2 items-end border-t border-gray-200 pt-1">
+            <div className="w-full relative bg-[#FFF5F7] px-4 py-4 -mt-20 z-100">
+              <div className="flex gap-2 items-end border-t border-gray-200 pt-2">
                 
                 {/* COLUNA ESQUERDA: Descrições e Totais */}
-                <div className="flex-1 my-2">
+                <div className="flex-1 my-0">
                   
                   {/* Tabela de Descrições */}
                   <div className="flex items-stretch mb-6">
@@ -389,8 +398,8 @@ const App = () => {
                       </div>
                       <div className="border-l border-r border-b border-gray-300 bg-white/80 min-h-[60px]">
                         {extras.map((item, idx) => (
-                          <div key={idx} className="flex text-xl border-b border-gray-100 last:border-0 items-center">
-                            <span className="flex-1 px-3 py-1 text-gray-700 uppercase">{item.description}</span>
+                          <div key={idx} className="flex text-2xl border-b border-gray-100 last:border-0 items-center">
+                            <span className="flex-1 px-5 py-1 text-gray-700 uppercase">{item.description}</span>
                             <span className="w-32 px-2 py-1 text-center text-gray-600 bg-gray-50/50">
                               {item.isIncluded ? 'Incluso' : item.value.toFixed(2)}
                             </span>
@@ -401,7 +410,7 @@ const App = () => {
                   </div>
 
                   {/* Totais */}
-                  <div className="space-y-1 my-2 ml-auto w-full max-w-[400px] pr-5">
+                  <div className="space-y-1 my-2 ml-auto w-full max-w-[400px] px-10">
                     <div className="flex items-center justify-between gap-2">
                        <span className="text-4xl text-gray-700 text-left">QUANTIDADE</span>
                        <div className="border border-gray-400 w-40 text-center text-3xl py-1 bg-white text-gray-500">
@@ -425,15 +434,15 @@ const App = () => {
                 </div>
 
                 {/* COLUNA DIREITA: Tamanhos */}
-                <div className="w-[200px] border-l border-[#333] pb-2">
-                  <h3 className="text-5xl text-[#333] text-center align-middle mb-2 leading-none">TAMANHO</h3>
+                <div className="w-[200px] border-l border-[#333] pb-1">
+                  <h3 className="text-6xl text-[#333] text-center align-middle leading-none">TAMANHO</h3>
                   
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-0" >
                     {sizes.map((size) => {
                       const isSelected = selectedSize === size.label;
                       return (
-                        <div key={size.label} className="flex items-center justify-end gap-2">
-                          <span className="text-gray-500 text-xl">{size.range}</span>
+                        <div key={size.label} className="flex items-center justify-end gap-2 mx-4 py-1">
+                          <span className="text-gray-500 text-2xl">{size.range}</span>
                           <div 
                             className={`
                               w-10 h-10 border-2 border-[#444] flex items-center justify-center 
@@ -454,17 +463,17 @@ const App = () => {
             </div>
 
             {/* === FOOTER === */}
-            <div className="bg-[#333] w-full flex justify-between items-center mt-auto z-20 px-2">
+            <div className="bg-[#333] w-full flex justify-between items-center mt-auto z-20 px-6 py-2">
                <div className="flex items-center gap-2 text-white tracking-wide text-xl">
-                 <Phone size={24} strokeWidth={2.5} /> 
+                 <Phone size={20} strokeWidth={2.5} /> 
                  <span className="mt-1">{contact.phone}</span>
                </div>
                <div className="flex items-center gap-2 text-white tracking-wide text-xl">
-                 <Mail size={24} strokeWidth={2.5} /> 
+                 <Mail size={20} strokeWidth={2.5} /> 
                  <span className="mt-1">{contact.email}</span>
                </div>
                <div className="flex items-center gap-2 text-white tracking-wide text-xl">
-                 <Instagram size={24} strokeWidth={2.5} /> 
+                 <Instagram size={20} strokeWidth={2.5} /> 
                  <span className="mt-1">{contact.instagram}</span>
                </div>
             </div>

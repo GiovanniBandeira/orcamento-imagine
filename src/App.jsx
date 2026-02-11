@@ -3,13 +3,13 @@ import { Camera, Plus, Trash2, Printer, Phone, Mail, Instagram } from 'lucide-re
 
 const App = () => {
   // --- Estados do Formulário ---
-  const [clientName, setClientName] = useState('Wedson');
-  const [modelName, setModelName] = useState('Raposa Pequeno Príncipe');
-  const [creatorName, setCreatorName] = useState('Giovanni');
+  const [clientName, setClientName] = useState('Digite aqui: ');
+  const [modelName, setModelName] = useState('Digite aqui: ');
+  const [creatorName, setCreatorName] = useState('Digite aqui: ');
   const [quantity, setQuantity] = useState(7);
   const [unitPrice, setUnitPrice] = useState(30.00);
-  const [selectedSize, setSelectedSize] = useState('PP'); // PP, P, M, G, XG
-  const [sendDate, setSendDate] = useState('2026-01-14');
+  const [selectedSize, setSelectedSize] = useState('M'); // PP, P, M, G, XG
+  const [sendDate, setSendDate] = useState(now().toISOString().split('T')[0]); // Data atual como padrão
   const [imageSrc, setImageSrc] = useState(null);
   
   // Lista de itens extras na descrição

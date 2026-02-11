@@ -9,7 +9,7 @@ const App = () => {
   const [quantity, setQuantity] = useState(7);
   const [unitPrice, setUnitPrice] = useState(30.00);
   const [selectedSize, setSelectedSize] = useState('M'); // PP, P, M, G, XG
-  const [sendDate, setSendDate] = useState(now().toISOString().split('T')[0]); // Data atual como padrão
+  const [sendDate, setSendDate] = useState("11/02/2026"); // Data atual como padrão
   const [imageSrc, setImageSrc] = useState(null);
   
   // Lista de itens extras na descrição

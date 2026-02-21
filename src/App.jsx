@@ -1,16 +1,22 @@
-import React, { useState } from 'react';
-import { Camera, Plus, Trash2, Printer, Phone, Mail, Instagram } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Camera, Plus, Trash2, Printer, Phone, Mail, Instagram, Download } from 'lucide-react';
+import * as htmlToImage from 'https://esm.sh/html-to-image';
+import { jsPDF } from 'https://esm.sh/jspdf';
 
 const App = () => {
   // --- Estados do Formulário ---
-  const [clientName, setClientName] = useState('Wedson');
-  const [modelName, setModelName] = useState('Raposa Pequeno Príncipe');
-  const [creatorName, setCreatorName] = useState('Giovanni');
+  const [clientName, setClientName] = useState('');
+  const [modelName, setModelName] = useState('');
+  const [creatorName, setCreatorName] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [unitPrice, setUnitPrice] = useState(40.00);
-  const [selectedSize, setSelectedSize] = useState('M'); // PP, P, M, G, XG
+  const [unitPrice, setUnitPrice] = useState(0.00);
+  const [selectedSize, setSelectedSize] = useState('PP'); // PP, P, M, G, XG
   const [sendDate, setSendDate] = useState(new Date().toISOString().split('T')[0]); // Data atual como padrão
   const [imageSrc, setImageSrc] = useState(null);
+  
+  // Referência para a área de captura e estado de carregamento
+  const printRef = useRef(null);
+  const [isExporting, setIsExporting] = useState(false);
   
   // Lista de itens extras na descrição
   const [extras, setExtras] = useState([
@@ -20,7 +26,7 @@ const App = () => {
 
   // Contatos fixos
   const [contact, setContact] = useState({
-    phone: '(83) 99391-3523',
+    phone: '(83) 9 9391-3523',
     email: 'imaginehub.oficial@gmail.com',
     instagram: '@imagine.hub_'
   });
@@ -81,87 +87,99 @@ const App = () => {
     { label: 'XG', range: '> 250 mm' },
   ];
 
+  // Lógica de exportação simplificada e imune a falhas usando renderização nativa
+  const handleExport = async (format) => {
+    if (!printRef.current) return;
+    setIsExporting(true);
+    
+    try {
+      // Garante que a fonte carregou completamente para o navegador desenhar certo
+      await document.fonts.ready;
+      
+      const node = printRef.current;
+      const fileName = `Orcamento_${clientName || 'Cliente'}`;
+
+      if (format === 'pdf') {
+        // html-to-image copia 100% igual a tela nativamente
+        const imgData = await htmlToImage.toPng(node, { pixelRatio: 2, backgroundColor: '#FFF5F7' });
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (node.offsetHeight * pdfWidth) / node.offsetWidth;
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`${fileName}.pdf`);
+      } else if (format === 'png') {
+        const imgData = await htmlToImage.toPng(node, { pixelRatio: 2, backgroundColor: '#FFF5F7' });
+        const link = document.createElement('a');
+        link.download = `${fileName}.png`;
+        link.href = imgData;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else if (format === 'jpg') {
+        const imgData = await htmlToImage.toJpeg(node, { quality: 1.0, pixelRatio: 2, backgroundColor: '#FFF5F7' });
+        const link = document.createElement('a');
+        link.download = `${fileName}.jpg`;
+        link.href = imgData;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (error) {
+      console.error('Erro ao exportar o arquivo:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 font-sans text-gray-800 flex flex-col lg:flex-row gap-8">
       {/* --- ESTILOS GLOBAIS E DE IMPRESSÃO --- */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
         
+        /* Garante que a fonte seja aplicada em tudo dentro do preview */
         .font-bebas {
           font-family: 'Bebas Neue', sans-serif !important;
         }
 
-        /* CORREÇÃO DA IMPRESSÃO A4 */
+        /* Estilo para impressão exata */
         @media print {
           @page { 
             size: A4; 
-            margin: 0; /* Remove margens do navegador */
+            margin: 0; 
           }
-          
-          html, body {
-            margin: 0 !important;
-            padding: 0 !important;
-            width: 210mm;
-            height: 297mm;
+          body { 
+            background: white;
+            -webkit-print-color-adjust: exact !important; 
+            print-color-adjust: exact !important; 
           }
-          
-          /* Força impressão de cores de fundo */
-          * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
+          /* Esconde tudo que não for a área de impressão */
+          body > *:not(.print-container) { 
+            display: none !important; 
           }
-          
-          /* Esconde interface */
-          body * {
-            visibility: hidden;
-          }
-
-          /* Reseta body */
-          body, html, #root {
-            background-color: white !important;
-            overflow: hidden !important; /* Evita scrollbars na impressão */
-          }
-
-          /* Mostra container de impressão */
-          .print-container, .print-container * {
-            visibility: visible;
-          }
-
-          /* Posiciona container no topo absoluto */
+          /* Força a exibição do container de impressão */
           .print-container {
+            display: flex !important;
+            width: 100% !important;
+            height: 100% !important;
             position: absolute !important;
             top: 0 !important;
             left: 0 !important;
-            width: 210mm !important; /* Largura A4 */
-            height: 297mm !important; /* Altura A4 */
             margin: 0 !important;
             padding: 0 !important;
             background-color: #FFF5F7 !important;
             z-index: 9999;
-            display: block !important;
           }
-
+          /* Ajustes de layout para impressão */
           .print-area {
             box-shadow: none !important;
-            /* Mantemos a largura base do design (595px) */
-            width: 595px !important;
-            height: 842px !important; /* Altura base proporcional */
-            min-height: 842px !important;
-            margin: 0 !important;
-            
-            /* --- O SEGREDO DA ESCALA --- */
-            /* Escala de 595px para 210mm (aprox 794px) = 1.333 */
-            transform: scale(1.333333) !important;
-            transform-origin: top left !important; /* Expande do canto superior esquerdo */
-          }
-
-          .no-print {
-            display: none !important;
+            width: 100% !important;
+            min-height: 100vh !important;
           }
         }
       `}</style>
 
-      {/* --- PAINEL DE CONTROLE --- */}
+      {/* --- PAINEL DE CONTROLE (Esquerda - Não aparece na impressão) --- */}
       <div className="w-full lg:w-1/3 bg-white p-6 rounded-xl shadow-lg h-fit no-print overflow-y-auto max-h-screen">
         <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">Editar Pedido</h2>
 
@@ -301,85 +319,117 @@ const App = () => {
         </div>
 
         {/* Ações */}
-        <button 
-          onClick={() => window.print()} 
-          className="w-full bg-gray-900 text-white py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-800 transition shadow-lg"
-        >
-          <Printer size={20} /> Imprimir / Salvar PDF
-        </button>
-        <p className="text-xs text-center text-gray-400 mt-2">Dica: Use "Salvar como PDF" na janela de impressão.</p>
+        <div className="flex flex-col gap-3 mt-4 border-t pt-4">
+          <span className="text-xs uppercase font-bold text-gray-500 text-center">Exportar Arquivo</span>
+          
+          <button 
+            onClick={() => handleExport('pdf')} 
+            disabled={isExporting}
+            className="w-full bg-gray-900 text-white py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-800 transition shadow-lg disabled:opacity-50"
+          >
+            <Printer size={20} /> {isExporting ? 'Processando...' : 'Exportar PDF'}
+          </button>
+          
+          <div className="flex gap-2">
+            <button 
+              onClick={() => handleExport('png')} 
+              disabled={isExporting}
+              className="flex-1 bg-blue-600 text-white py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition shadow disabled:opacity-50"
+            >
+              <Download size={18} /> PNG
+            </button>
+            <button 
+              onClick={() => handleExport('jpg')} 
+              disabled={isExporting}
+              className="flex-1 bg-green-600 text-white py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-green-700 transition shadow disabled:opacity-50"
+            >
+              <Download size={18} /> JPG
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* --- PREVIEW / ÁREA DE IMPRESSÃO (Direita) --- */}
       <div className="print-container flex-1 flex justify-center overflow-auto bg-gray-200/50 p-4 lg:p-8">
         
-        {/* Container Customizado - Proporção A4 (1/1.414) */}
-        <div className="print-area bg-[#FFF5F7] relative shadow-2xl flex flex-col font-bebas overflow-hidden"
+        {/* Container Customizado - Adicionado o ref={printRef} para captura */}
+        <div ref={printRef} className="print-area bg-[#FFF5F7] relative shadow-2xl flex flex-col font-bebas overflow-hidden"
              style={{ 
                width: '595px', 
-               minHeight: '842px', // Altura padrão A4 para preview
-               aspectRatio: '1/1.413',
-               position: 'relative',
+               minHeight: '842px', 
+               aspectRatio: '1/1.414',
              }}>
           
-          {/* Fundo Verde Central - Ajustado para ir até atrás da imagem */}
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-[160px] h-[65%] bg-[#00FF55] z-0"></div>
+          {/* Fundo Verde Central */}
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-[180px] h-[65%] bg-[#00FF55] z-0"></div>
 
           {/* === HEADER === */}
-          <div className="relative z-10 w-full text-center pt-8 mb-4">
-            <h1 className="text-[130px] leading-[0.8] -tracking-wide text-[#333]">
+          {/* --- TÍTULO IMAGINE (Editável para Alinhamento) --- */}
+          {/* Se precisar ajustar o alinhamento, altere as classes 'text-center' ou 'pt-8' abaixo */}
+          <div className="relative z-10 w-full text-center pt-8">
+            <h1 className="text-[120px] leading-[0.8] tracking-tighter text-[#333]">
               IMAGINE
             </h1>
-            <p className="text-4xl tracking-[0.23em] text-[#444] mt-[-15px] ml-4">
+            <p className="text-3xl tracking-[0.25em] text-[#444] mt-[-14px] ml-4">
               ORÇAMENTO DE PEDIDO
             </p>
           </div>
 
-          {/* === CORPO PRINCIPAL (Layout Fluido e Unido) === */}
-          <div className="relative z-10 w-full flex-1 flex flex-col">
+          {/* === CONTEÚDO CENTRAL === */}
+          <div className="relative z-10 flex-1 w-full flex flex-col">
             
-            {/* Linha Superior: Info e Imagem */}
-            <div className="relative w-full flex-1 min-h-0 flex flex-col px-2">
+            {/* Informações Superiores (Modelo e Cliente) */}
+            {/* --- POSIÇÃO DO MODELO/CLIENTE (Editável) --- */}
+            {/* Ajuste o 'px-4' para mudar a distância da lateral */}
+            <div className="flex justify-between items-start px-4 mt-12 w-full">
               
-              {/* Infos Laterais */}
-              <div className="absolute left-0 top-0 text-left max-w-[35%] z-20 px-2 py-5 pt-10">
-                <h2 className="text-5xl leading-none text-[#444] uppercase mb-2 break-words">
+              {/* Esquerda: Modelo */}
+              <div className="text-left max-w-[40%]">
+                <h2 className="text-6xl leading-none text-[#444] uppercase pt-3 mb-2">
                   {modelName}
                 </h2>
-                <div className="text-xl text-gray-500 uppercase font-light leading-none pt-20">
-                  <span className="text-gray-500 text-4xl">CRIADOR:</span><br/>
-                  <span className="text-5xl text-[#444] break-words">{creatorName}</span>
+                <div className="text-xl text-gray-500 pt-20 uppercase font-light leading-none">
+                  <span className="text-gray-400 text-4xl">CRIADOR:</span><br/>
+                  <span className="text-5xl text-[#444]">{creatorName}</span>
                 </div>
               </div>
 
-              <div className="absolute right-0 top-0 text-right max-w-[35%] z-20 px-2 pt-20">
-                <h2 className="text-4xl text-gray-500 uppercase mb-1">
+              {/* Centro: Imagem */}
+              {/* Aumentei o z-index para 0 para ficar atrás do texto se necessário, ou ajuste conforme preferência */}
+              <div className="absolute left-1/2 top-24 transform -translate-x-1/2 w-[400px] h-[450px] flex items-center justify-center pointer-events-none z-0">
+                {imageSrc ? (
+                  <img 
+                    src={imageSrc} 
+                    alt="Produto" 
+                    className="w-full h-full object-contain"
+                    style={{ filter: 'drop-shadow(5px 10px 15px rgba(0,0,0,0.4))' }}
+                  />
+                ) : (
+                  <div className="text-center text-gray-400 opacity-50 text-2xl">
+                    [Sem Imagem]
+                  </div>
+                )}
+              </div>
+
+              {/* Direita: Cliente */}
+              <div className="text-right max-w-[35%] relative z-10">
+                <h2 className="text-5xl text-gray-500 uppercase mb-1">
                   CLIENTE
                 </h2>
                 <p className="text-6xl text-[#444] uppercase leading-none break-words">
                   {clientName}
                 </p>
               </div>
+            </div>
 
-              {/* Imagem Centralizada */}
-              <div className="flex-1 flex items-center justify-center pt-15 pb-0">
-                 {imageSrc ? (
-                  <img 
-                    src={imageSrc} 
-                    alt="Produto" 
-                    className="w-full h-full object-contain max-h-[380px] z-0" 
-                    style={{ filter: 'drop-shadow(5px 10px 15px rgba(0,0,0,0.4))' }}
-                  />
-                ) : (
-                  <div className="text-center text-gray-400 opacity-50 text-2xl h-64 flex items-center">
-                    [Sem Imagem]
-                  </div>
-                )}
-              </div>
-                <div className="absolute right-1 bottom-3 text-right z-9 px-2 pb-20">
-                    <p className="text-3xl text-gray-500 mb-0 leading-none">DATA DE ENVIO</p>
-                    <p className="text-4xl text-[#333] leading-none">{formatDate(sendDate)}</p>
-                </div>
+            {/* Espaçador para empurrar o resto para baixo */}
+            <div className="flex-grow"></div>
+
+            {/* Data de Envio (Reposicionada mais para cima) */}
+            {/* Ajuste o 'bottom-[xxx]' para subir ou descer a data */}
+            <div className="absolute bottom-[300px] right-6 text-right z-20">
+               <p className="text-3xl text-gray-500 mb-0 leading-none">DATA DE ENVIO</p>
+               <p className="text-4xl text-[#333] leading-none">{formatDate(sendDate)}</p>
             </div>
 
             {/* === ÁREA INFERIOR (Grid Compacto) === */}
@@ -462,18 +512,18 @@ const App = () => {
               </div>
             </div>
 
-            {/* === FOOTER === */}
-            <div className="bg-[#333] w-full flex justify-between items-center mt-auto z-20 px-6 py-2">
+            {/* === FOOTER (Ícones Corrigidos) === */}
+            <div className="bg-[#333] w-full py-3 px-6 flex justify-between items-center mt-2 z-20">
                <div className="flex items-center gap-2 text-white tracking-wide text-xl">
-                 <Phone size={20} strokeWidth={2.5} /> 
+                 <Phone size={24} strokeWidth={2.5} /> 
                  <span className="mt-1">{contact.phone}</span>
                </div>
                <div className="flex items-center gap-2 text-white tracking-wide text-xl">
-                 <Mail size={20} strokeWidth={2.5} /> 
+                 <Mail size={24} strokeWidth={2.5} /> 
                  <span className="mt-1">{contact.email}</span>
                </div>
                <div className="flex items-center gap-2 text-white tracking-wide text-xl">
-                 <Instagram size={20} strokeWidth={2.5} /> 
+                 <Instagram size={24} strokeWidth={2.5} /> 
                  <span className="mt-1">{contact.instagram}</span>
                </div>
             </div>

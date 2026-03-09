@@ -1,0 +1,75 @@
+
+=== Sheet: Custo Resina ===
+
+Modelo |  |  |  |  |  | PREÇO FINAL (SEM PINTURA) |  |  |  |  | Conversor de hora
+Produto Part1 | Tempo de Impressão |  | Peso Estimado |  |  | Markup | 4 |  |  |  | Tempo inserido | 0.1666 |  | 1h = | 1
+Luffy | 1 | horas | 10 | g |  | Lucro total | 30.12400580814625 |  |  |  |  |  |  | 30min = | 0.5
+Produto Part2 | Tempo de Impressão |  | Peso Estimado |  |  |  |  |  |  |  | Tempo convertido | 0.006941666666666666 |  | 10min = | 0.1666
+Luffy Transparente | 0.65 | horas | 0 | g |  | Valor Final - Cliente | 40
+Produto Part3 | Tempo de Impressão |  | Peso Estimado |  |  | Valor Final - Shopee | 53 | 0.2 | 5
+Venom | 0 | horas | 0 | g |  | Valor Final - ML | 52 | 0.3 |  
+Custo Fixo |  |  | Custos Variavel
+Internet | 60 |  | Kg da Resina 1 | 139.9 |  | PREÇO FINAL (COM PINTURA)
+Assinaturas de softwares | 54.23 |  | Kg da Resina 2 | 0 |  | Pintura | Simples
+- |  |  | Kg da Resina 3 | 0 |  | Markup | 2
+- |  |  | Potencia Impressora | 42 |  | Lucro total | 16.61200580814625
+- |  |  | Custo KWh | 0.97
+- |  |  | Embalagem | 0 |  | Valor Final - Cliente | 33
+- |  |  | Frete (Frete Gratis) | 0 |  | Valor Final - Shopee | 44 | 0.2 | 4
+- |  |  | Álcool Limpeza | 5 |  | Valor Final - ML | 40 | 0.19 |  
+- |  |  | Amortização
+- |  |  | Creality Halot R6 | 1180.1
+- |  |  | - |  |  | Custos Direto do Produto | 6.401800875
+Total Custo Fixo | 114.22999999999999 |  | - |  |  | Custos Indireto do Produto | 1.8281942848781247
+ |  |  | - |  |  | Percentual de Falhas  | 1.6459990319756252 | 0.2
+Faturamento Previsto | 400 |  | -
+Custo Fixo Dissolvido | 0.28557499999999997 |  | Vida Util (Meses) | 18 |  | Custo Total do Produto | 9.875994191853751
+ |  |  | Total Amortização | 65.5611111111111
+ |  |  |  |  |  | Custo Pintura | Simples | 6.5120000000000005
+ |  |  |  |  |  | Custo Pintura | Média | 9.012
+Pintura |  |  |  |  |  | Custo Pintura | Complexa | 11.512
+Tinta Acrilica Simples | 2
+Tinta Acrilica Média | 4
+Tinta Acrilica Complexa | 6 | Valor Spray | Qtd de peças
+Primer | 2.295 | 45.9 | 20
+Verniz | 1.217 | 24.34 | 20
+Mão de Obra Pintura
+Simples | 1 | hrs
+Média | 1.5 | hrs
+Complexa | 2 | hrs
+Custo Hora | 1
+
+=== Sheet: Custo Filamento ===
+
+Video explicando a planilha |  | https://youtu.be/AlZiM34PTiA
+Modelo |  |  |  |  |  | PREÇO FINAL (SEM PINTURA)
+Produto | Tempo de Impressão |  | Peso Estimado |  |  | Markup | 2.5
+Chapeu Seletor | 5.41 | horas | 39 | g |  | Lucro total | 13.378280654266
+Custo Fixo |  |  | Custos Variavel |  |  | Valor Final - Cliente | 22
+Internet | 60 |  | Kg do Filamento | 139.9 |  | Valor Final - Shopee | 31 | 0.2 | 4
+Assinaturas de softwares | 54.23 |  | Potencia Impressora | 42 |  | Valor Final - ML | 27 | 0.19 |  
+- |  |  | Custo KWh | 0.97
+- |  |  | Embalagem | 0
+- |  |  | Frete (Frete Gratis) | 0 |  | PREÇO FINAL (COM PINTURA)
+- |  |  | Álcool Limpeza | 28.9 |  | Pintura | Simples |  |  |  |  | Células brancas podem ser alteradas
+- |  |  | Amortização |  |  | Markup | 2.5
+- |  |  | Creality Halot R6 | 1500 |  | Lucro total | 50.70361398759933 |  |  |  |  | Células em Verde são formulas
+- |  |  | - |  |  |  |  |  |  |  |  | não digitar a menos que saiba oq está fazendo
+- |  |  | - |  |  | Valor Final - Cliente | 84
+- |  |  | - |  |  | Valor Final - Shopee | 105 | 0.2 | 4 |  |  | Valor Final do Produto
+Total Custo Fixo | 114.22999999999999 |  | - |  |  | Valor Final - ML | 100 | 0.19 |  
+ |  |  | Vida Util (Meses) | 24 |  |  |  |  |  |  |  | Caixa para selecionar
+Faturamento Previsto | 300
+Custo Fixo Dissolvido | 0.38076666666666664 |  | Total Amortização | 62.5 |  | Custos Direto do Produto | 5.6765034000000005
+ |  |  |  |  |  | Custos Indireto do Produto | 2.16142327794
+Pintura |  |  |  |  |  | Percentual de Falhas  | 0.7837926677940001 | 0.1
+Tinta Acrilica Simples | 2
+Tinta Acrilica Média | 4 |  |  |  |  | Custo Total do Produto | 8.621719345734
+Tinta Acrilica Complexa | 6 | Valor Spray | Qtd de peças
+Primer | 1.8633333333333333 | 55.9 | 30
+Verniz | 0.8113333333333334 | 24.34 | 30 |  |  | Custo Pintura | Simples | 24.674666666666667
+Mão de Obra Pintura |  |  |  |  |  | Custo Pintura | Média | 56.67466666666667
+Simples | 1 | hrs |  |  |  | Custo Pintura | Complexa | 68.67466666666667
+Média | 2.5 | hrs
+Complexa | 3 | hrs
+Custo Hora | 20

@@ -24,7 +24,7 @@ const FeedSquare = forwardRef(({ modelName, themeName, sizes, painting, material
       {/* HEADER SIMPLES */}
       <div className="absolute top-16 left-16 z-20 flex items-center gap-4">
         <div className="w-[12px] h-[12px] bg-[#00FF55]"></div>
-        <span className="text-[#00FF55] tracking-[0.3em] text-[24px]">IMAGINE HUB</span>
+        <span className="text-[#00FF55] tracking-[0.3em] text-[24px]">IMAGINE</span>
       </div>
 
       {/* ÁREA CENTRAL - MENSAGEM */}

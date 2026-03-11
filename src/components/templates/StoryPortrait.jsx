@@ -26,7 +26,7 @@ const StoryPortrait = forwardRef(({ modelName, themeName, sizes, painting, mater
 
           {/* HEADER SIMPLES */}
           <div className="w-full flex justify-between items-center px-16 pt-24 z-20">
-            <span className="text-[#00FF55] tracking-[0.3em] text-[35px]">IMAGINE HUB</span>
+            <span className="text-[#00FF55] tracking-[0.3em] text-[35px]">IMAGINE</span>
             <div className="w-[12px] h-[12px] bg-[#00FF55] shadow-[0_0_15px_#00FF55]"></div>
           </div>
 

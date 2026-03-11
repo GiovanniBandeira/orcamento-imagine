@@ -25,7 +25,7 @@ const FeedPortrait = forwardRef(({ modelName, themeName, sizes, painting, materi
           {/* HEADER */}
           <div className="absolute top-16 left-16 z-20 flex items-center gap-4">
             <div className="w-[12px] h-[12px] bg-[#00FF55]"></div>
-            <span className="text-[#00FF55] tracking-[0.3em] text-[24px]">IMAGINE HUB</span>
+            <span className="text-[#00FF55] tracking-[0.3em] text-[24px]">IMAGINE</span>
           </div>
 
           <div className="flex-1 flex flex-col items-center justify-center z-20 px-24 w-full mt-10">

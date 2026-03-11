@@ -22,13 +22,9 @@ const PrintCard = () => {
       const fileName = `Cartao_Imagine_10x15cm`;
 
       // Gerar imagem em alta resolução
-      const imgData = await htmlToImage.toPng(node, { pixelRatio: 3, backgroundColor: '#EBEBEB' });
+      const imgData = await htmlToImage.toPng(node, { pixelRatio: 3, backgroundColor: '#111111' });
       
-      // Criar PDF no formato Exato do Cartão Postal (100mm x 150mm Aberto, Focaremos em Exportar a Frente e Verso em 1 pdf)
-      // Como o design renderiza a Frente Encima e o Verso Embaixo visualmente, exportaremos exatamente como está!
-      // Ou seja, um PDF longo contendo as duas faces caso o usuário queira mandar pra gráfica já "emendado" ou cortar no meio.
-      // O tamanho de 10x15cm (vertical) = 100x150mm. Com as 2 peças empilhadas dá 100x300mm.
-      
+      // PDF no formato Exato do Cartão Postal (100mm x 150mm Aberto, Focaremos em Exportar a Frente e Verso em 1 pdf longo)
       const pdf = new jsPDF('p', 'mm', [100, 300]); 
       pdf.addImage(imgData, 'PNG', 0, 0, 100, 300);
       pdf.save(`${fileName}.pdf`);
@@ -56,7 +52,7 @@ const PrintCard = () => {
 
         {/* Textos Principais */}
         <div className="grid grid-cols-1 gap-4 mb-6">
-          <div>
+           <div>
             <label className="text-xs uppercase font-bold text-gray-500">Instagram</label>
             <input 
               value={instagram} 
@@ -96,131 +92,138 @@ const PrintCard = () => {
 
       {/* ÁREA DE PRÉ-VISUALIZAÇÃO COMPLETA */}
       <div className="flex-1 flex flex-col bg-gray-200/50 p-4 rounded-xl items-center pb-20 overflow-x-auto relative">
-        <h3 className="text-gray-500 mb-6 font-medium">Pré-Visualização Real (Alta Resolução)</h3>
+        <h3 className="text-gray-500 mb-6 font-medium">Pré-Visualização (Escala 35%)</h3>
         
-        {/* Container Escalado do Cartão (1080px = 10cm | 1620px = 15cm em Proporção) */}
-        <div className="relative shadow-2xl flex-shrink-0 origin-top transform scale-[0.4] sm:scale-50 md:scale-[0.55] lg:scale-[0.6] transition-transform">
+        {/* Container Escalado do Cartão */}
+        <div className="relative shadow-2xl flex-shrink-0 origin-top transform scale-[0.25] sm:scale-[0.35] md:scale-[0.4] transition-transform">
            
-           <div ref={printRef} className="flex flex-col gap-[2px] bg-red-400 border-[1px] border-dashed border-red-500">
+           <div ref={printRef} className="flex flex-col gap-0 border-[1px] border-dashed border-gray-400 bg-black">
              
              {/* ======================= */}
              {/*       FRENTE (10x15)    */}
              {/* ======================= */}
-             <div className="w-[1080px] h-[1620px] bg-[#EBEBEB] relative font-bebas flex flex-col overflow-hidden">
-                {/* Linha Lateral Verde */}
-                <div className="absolute top-0 right-0 w-[40px] h-full bg-[#00FF55]"></div>
+             <div className="w-[1080px] h-[1620px] bg-[#111] relative font-bebas flex flex-col overflow-hidden">
                 
+                {/* Efeitos de Fundo (Tech/Neon) */}
+                <div className="absolute inset-0 opacity-[0.05]" style={{
+                  backgroundImage: 'linear-gradient(#00FF55 2px, transparent 2px), linear-gradient(90deg, #00FF55 2px, transparent 2px)',
+                  backgroundSize: '150px 150px'
+                }}></div>
+                <div className="absolute top-[-200px] left-[-200px] w-[800px] h-[800px] bg-[#00FF55] opacity-20 blur-[300px] rounded-full"></div>
+
                 {/* CABEÇALHO */}
-                <div className="flex flex-col items-center pt-24 z-10 w-full px-20">
-                   <h1 className="text-[180px] leading-none tracking-tight text-[#444] text-center w-full">
-                     SUA IMAGINAÇÃO<br/>TOMOU FORMA!
-                   </h1>
-                   <div className="w-full h-[3px] bg-[#bbb] mt-10"></div>
+                <div className="w-full flex items-center justify-between px-16 pt-20 z-20">
+                    <span className="text-[#00FF55] tracking-[0.3em] text-[40px]">IMAGINE</span>
+                    <div className="w-[16px] h-[16px] bg-[#00FF55] shadow-[0_0_20px_#00FF55]"></div>
                 </div>
 
-                {/* CORPO FRENTE */}
-                <div className="flex-1 flex flex-col items-center justify-center px-16 -mt-20">
-                    <p className="font-sans text-[45px] text-[#444] text-center mb-16 font-light leading-snug">
-                       MUITO OBRIGADO POR CONFIAR NO NOSSO TRABALHO.<br/>SUA PEÇA FOI FEITA COM MUITO CUIDADO E DEDICAÇÃO!
-                    </p>
+                <div className="flex flex-col items-center pt-24 z-10 w-full px-20 relative">
+                   <h1 className="text-[140px] leading-[0.85] tracking-tight text-[#EBEBEB] text-center w-full">
+                     SUA IMAGINAÇÃO<br/>TOMOU FORMA!
+                   </h1>
+                   <div className="w-[150px] h-[4px] bg-[#00FF55] mt-12 mb-10 shadow-[0_0_15px_#00FF55]"></div>
+                   <p className="font-sans text-[42px] text-gray-300 text-center font-light leading-snug tracking-wide w-full max-w-[800px]">
+                      MUITO OBRIGADO POR CONFIAR NO NOSSO TRABALHO.<br/>SUA PEÇA FOI FEITA COM MUITO CUIDADO E DEDICAÇÃO!
+                   </p>
+                </div>
 
-                    {/* Bloco de Cupom */}
-                    <div className="w-[800px] border-4 border-[#00FF55] border-dashed bg-white p-10 flex flex-col items-center justify-center relative shadow-lg">
-                       {/* Distintivo Superior */}
-                       <div className="absolute -top-[50px] bg-[#00FF55] text-black px-10 py-3 text-[50px] tracking-widest font-bold">
+                {/* CORPO FRENTE (Cupom Neon) */}
+                <div className="flex-1 flex flex-col items-center justify-center px-16 z-20">
+                    <div className="w-[850px] border-2 border-[#00FF55] bg-black/60 p-12 flex flex-col items-center justify-center relative shadow-[0_0_50px_rgba(0,255,85,0.15)] backdrop-blur-md">
+                       
+                       <div className="absolute -top-[40px] bg-[#00FF55] text-[#111] px-12 py-3 text-[45px] tracking-widest font-bold">
                           PRESENTE EXCLUSIVO
                        </div>
                        
-                       <p className="font-sans text-[30px] text-gray-500 mb-6 mt-4 text-center px-10">
+                       <p className="font-sans text-[32px] text-gray-300 mb-8 mt-6 text-center px-10 leading-snug">
                          {discountText}
                        </p>
-                       <div className="bg-[#EBEBEB] w-full py-6 text-center border-[2px] border-[#333]">
-                          <span className="text-[120px] tracking-wider text-[#333] leading-none font-sans font-black">
+                       <div className="bg-[#00FF55]/10 w-full py-8 text-center border-[2px] border-[#00FF55] border-dashed">
+                          <span className="text-[130px] tracking-wider text-[#00FF55] leading-none font-sans font-black shadow-sm">
                             {discountCode}
                           </span>
                        </div>
-                       <p className="font-sans text-[20px] text-gray-400 mt-6 text-center italic">
+                       <p className="font-sans text-[22px] text-gray-400 mt-8 text-center italic font-light">
                          * Válido apenas para compras realizadas diretamente pelo WhatsApp ou Direct.
                        </p>
                     </div>
                 </div>
 
                 {/* RODAPÉ FRENTE */}
-                <div className="w-full bg-[#333] h-[160px] flex items-center justify-between px-16 z-20">
-                   <div className="flex items-center gap-6 text-white text-[45px] font-sans font-light tracking-wide">
-                      <QrCode size={70} color="#00FF55" />
-                      <div className="flex flex-col leading-none">
-                         <span className="text-[#00FF55] font-bold">MARQUE A GENTE!</span>
-                         <span>{instagram}</span>
+                <div className="w-full bg-[#111] h-[180px] flex items-center justify-center px-16 z-20 border-t border-[#333]">
+                   <div className="flex items-center gap-8 text-white text-[50px] font-sans font-light tracking-wide">
+                      <QrCode size={80} color="#00FF55" />
+                      <div className="flex flex-col leading-tight">
+                         <span className="text-gray-400 text-[35px]">MARQUE A GENTE!</span>
+                         <span className="font-bold text-[#EBEBEB] text-[55px] tracking-wider">{instagram}</span>
                       </div>
                    </div>
-                   
-                   {/* Logo Simplificada */}
-                   <span className="text-white text-[80px] font-bebas tracking-tighter">IMAGINE</span>
                 </div>
              </div>
 
              {/* ======================= */}
              {/*       VERSO (10x15)     */}
              {/* ======================= */}
-             <div className="w-[1080px] h-[1620px] bg-[#333] relative font-bebas flex flex-col overflow-hidden text-white">
-                {/* Linha Lateral Verde */}
-                <div className="absolute top-0 right-0 w-[40px] h-full bg-[#00FF55]"></div>
+             <div className="w-[1080px] h-[1620px] bg-[#0F0F0F] relative font-bebas flex flex-col overflow-hidden text-white border-t-[4px] border-[#00FF55] border-dashed">
                 
+                {/* Linha Lateral Verde no verso pra colar ideia de Design System */}
+                <div className="absolute top-0 right-0 w-[15px] h-full bg-[#00FF55] opacity-20"></div>
+                <div className="absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] bg-[#00FF55] opacity-[0.05] blur-[150px] rounded-full"></div>
+
                 {/* CABEÇALHO */}
-                <div className="flex flex-col items-center pt-24 z-10 w-full px-20">
-                   <h2 className="text-[160px] leading-[0.8] tracking-widest text-[#00FF55] text-center w-full">
-                     CUIDADOS<br/><span className="text-white">COM A PEÇA</span>
+                <div className="flex flex-col items-center pt-32 z-10 w-full px-20">
+                   <h2 className="text-[150px] leading-[0.8] tracking-widest text-white text-center w-full">
+                     CUIDADOS<br/><span className="text-[#00FF55]">COM A PEÇA</span>
                    </h2>
-                   <div className="w-full h-[3px] bg-[#555] mt-12"></div>
+                   <div className="w-[150px] h-[4px] bg-[#00FF55] mt-12 mb-10 shadow-[0_0_15px_#00FF55]"></div>
                 </div>
 
                 {/* CORPO VERSO (Regras) */}
-                <div className="flex-1 flex flex-col items-start justify-center px-24 gap-16 font-sans">
+                <div className="flex-1 flex flex-col items-start justify-center px-24 gap-16 font-sans relative z-20">
                    
                    {/* Regra 1 */}
                    <div className="flex items-center gap-10">
-                      <div className="w-[180px] h-[180px] flex-shrink-0 bg-[#444] rounded-full flex items-center justify-center border-[4px] border-[#00FF55]">
-                         <span className="text-[100px]">☀️</span>
+                      <div className="w-[160px] h-[160px] flex-shrink-0 bg-[#111] rounded-full flex items-center justify-center border-[2px] border-[#00FF55] shadow-[0_0_30px_rgba(0,255,85,0.2)]">
+                         <span className="text-[90px] grayscale brightness-200 sepia-[1] hue-rotate-[70deg] saturate-[5] opacity-90">☀️</span>
                       </div>
                       <div className="flex flex-col">
-                         <h3 className="text-[55px] font-bold text-white leading-none mb-2">EVITE O CALOR</h3>
-                         <p className="text-[32px] text-gray-400 font-light leading-snug">
-                           Não deixe a peça exposta diretamente à luz do sol por longos períodos ou em locais muito quentes para evitar empenamentos.
+                         <h3 className="text-[55px] font-bold text-white leading-none mb-3 tracking-wide">EVITE O CALOR</h3>
+                         <p className="text-[34px] text-gray-400 font-light leading-snug w-full max-w-[650px]">
+                           Não deixe a peça exposta diretamente à luz do sol ou em locais muito quentes para evitar empenamentos na resina.
                          </p>
                       </div>
                    </div>
 
                    {/* Regra 2 */}
                    <div className="flex items-center gap-10">
-                      <div className="w-[180px] h-[180px] flex-shrink-0 bg-[#444] rounded-full flex items-center justify-center border-[4px] border-[#00FF55]">
-                         <span className="text-[100px]">💧</span>
+                      <div className="w-[160px] h-[160px] flex-shrink-0 bg-[#111] rounded-full flex items-center justify-center border-[2px] border-[#00FF55] shadow-[0_0_30px_rgba(0,255,85,0.2)]">
+                         <span className="text-[90px] grayscale brightness-200 sepia-[1] hue-rotate-[70deg] saturate-[5] opacity-90">💧</span>
                       </div>
                       <div className="flex flex-col">
-                         <h3 className="text-[55px] font-bold text-white leading-none mb-2">CUIDADO COM A UMIDADE</h3>
-                         <p className="text-[32px] text-gray-400 font-light leading-snug">
-                           Apesar de resistente, peças pintadas à mão e envernizadas podem sofrer danos se lavadas de forma agressiva ou emersas em água.
+                         <h3 className="text-[55px] font-bold text-white leading-none mb-3 tracking-wide">ÁGUA E UMIDADE</h3>
+                         <p className="text-[34px] text-gray-400 font-light leading-snug w-full max-w-[650px]">
+                           Modelos pintados à mão não devem ser mergulhados na água ou lavados com produtos químicos fortes sob risco de danificar a pintura.
                          </p>
                       </div>
                    </div>
 
                    {/* Regra 3 */}
                    <div className="flex items-center gap-10">
-                      <div className="w-[180px] h-[180px] flex-shrink-0 bg-[#444] rounded-full flex items-center justify-center border-[4px] border-[#00FF55]">
-                         <span className="text-[100px]">🧹</span>
+                      <div className="w-[160px] h-[160px] flex-shrink-0 bg-[#111] rounded-full flex items-center justify-center border-[2px] border-[#00FF55] shadow-[0_0_30px_rgba(0,255,85,0.2)]">
+                         <span className="text-[90px] grayscale brightness-200 sepia-[1] hue-rotate-[70deg] saturate-[5] opacity-90">🧹</span>
                       </div>
                       <div className="flex flex-col">
-                         <h3 className="text-[55px] font-bold text-white leading-none mb-2">LIMPEZA DELICADA</h3>
-                         <p className="text-[32px] text-gray-400 font-light leading-snug">
-                           Utilize apenas um pano seco ou um pincel de cerdas macias para remover a poeira. Não utilize produtos químicos abrasivos.
+                         <h3 className="text-[55px] font-bold text-white leading-none mb-3 tracking-wide">LIMPEZA DELICADA</h3>
+                         <p className="text-[34px] text-gray-400 font-light leading-snug w-full max-w-[650px]">
+                           Utilize apenas um pano seco de microfibra ou um pincel de cerdas bem macias para espanar o pó da peça com certa frequência.
                          </p>
                       </div>
                    </div>
 
                 </div>
 
-                <div className="w-full text-center pb-10 text-[35px] text-gray-500 font-sans tracking-widest">
-                  Feito com tecnologia e arte.
+                <div className="w-full text-center pb-16 z-20">
+                   <span className="text-[35px] text-[#00FF55] font-sans tracking-[0.3em] font-light">IMAGINE STUDIO</span>
                 </div>
              </div>
 

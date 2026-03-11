@@ -1,6 +1,6 @@
-# PROMPT BASE DO PROJETO - IMAGINE HUB
+# PROMPT BASE DO PROJETO - IMAGINE
 
-Este é o escopo técnico e a visão de design da plataforma **Imagine Hub**, uma ferramenta interna para uma empresa de Impressão 3D. Utilize este prompt como base para entender o sistema atual e expandi-lo em conversas futuras com Inteligências Artificiais.
+Este é o escopo técnico e a visão de design da plataforma **Imagine**, uma ferramenta interna para uma empresa de Impressão 3D. Utilize este prompt como base para entender o sistema atual e expandi-lo em conversas futuras com Inteligências Artificiais.
 
 ---
 
@@ -17,11 +17,11 @@ Este é o escopo técnico e a visão de design da plataforma **Imagine Hub**, um
 ---
 
 ## 🎨 IDENTIDADE VISUAL
-A estética de todo o sistema e das artes geradas por ele (especialmente os Templates de Texto) segue a identidade oficial da Imagine Hub (visto em `www.imaginehub.site`):
-- **Core Tema:** Dark/Tech (Preto `#111` ou fundo Cinza Claro `#EBEBEB` para contrastar as peças).
+A estética de todo o sistema e das artes geradas por ele segue a identidade oficial da Imagine:
+- **Core Tema:** Dark/Tech (Fundo Preto Escuro `#111` ou Cinza Escuro `#0F0F0F` para contrastar as peças).
 - **Cor de Destaque Primária:** Verde Neon (`#00FF55`).
 - **Fontes Base:** `Bebas Neue` (Títulos Giga, Impacto Visual) e Sistema Sans-serif padrão para legibilidade (Roboto/Inter).
-- **Elementos Visuais:** Letreiros Vazados, Grids Tecnológicos (grid neon de fundo), Sombras Pesadas sob as peças (Drop Shadows pra saltar na tela) e minimalismo funcional. *Proibida poluição visual e excesso de variações das antigas logos caso a imagem do produto já contenha a logo do estúdio.*
+- **Elementos Visuais:** Letreiros Vazados, Grids Tecnológicos (grid neon de fundo simulando UI HeadUp Display), Sombras Pesadas sob as peças e blocos com Backdrop Blur (efeito vidro escuro com cores vazando por trás). *Proibida poluição visual e excesso de variações das antigas logos. A logo atual agora é tipográfica vazada "IMAGINE".*
 
 ---
 
@@ -38,11 +38,11 @@ Painel único que replica os dados em 3 Views Simultâneas usando Tabs.
 - **Textos Automáticos:** Para gerar avisos rápidos nas redes, os templates possuem gatilhos `isTextOnly`. Se ativados, o design muda de um plano "Light" (que abriga a imagem em PNG da peça) para um plano "Dark/Neon Tech" exibindo apenas as *props* `postTitle` e `postText` preenchidas no painel.
 
 ### 3. Cartão Impresso (`/src/pages/PrintCard.jsx`)
-Gerador para enviar na embalagem junto com os colecionáveis 3D. 
-- Formato Vertical (`100x150mm`).
-- Renderizado em uma tela longa via JS (`width: 1080px`, `height: 3240px`) que encapsula Frente e Verso de uma só vez para facilitar a emissão de 1 só PDF contínuo.
-- **Frente:** Contém a chamada "Sua Imaginação Tomou Forma", o Cupom dinâmico e Instagram da loja.
-- **Verso:** Área instrutiva com 3 marcadores (Evite sol excessivo, umidade e use pincel seco).
+Gerador para enviar na embalagem junto com os colecionáveis 3D. O design abandonou o layout Vertical e abraçou a LARGURA: 
+- **Formato Paisagem (Deitado):** `150x100mm` (Layout Horizontal Largo).
+- Renderizado em uma tela de Flex Row via JS (`width: 1620px`, `height: 1080px`). As faces são geradas juntas num mesmo canvas, fáceis de converter para um PDF de 2 páginas ou um PDF longo Contínuo via jsPDF empilhado.
+- **Frente (Lado Esquerdo vs Lado Direito):** O lado esquerdo agrupa a chamada "Sua Imaginação Tomou Forma" e as Redes Sociais, enquanto o lado direito estampa um Ticket Gigante estilizado Neon ("Presente Exclusivo" - Cupom dinâmico).
+- **Verso:** O título "CUIDADOS COM A PEÇA" domina a esquerda, e as 3 regras (Sol ☀️, Água 💧, Limpeza delicada 🧹) são listas em cascata confortavelmente preenchendo a direita. Tudo tematizado em Dark+VerdeNeon.
 
 ### 4. Precificador (`/src/pages/PricingCalculator.jsx`)
 Coração financeiro da ferramenta.

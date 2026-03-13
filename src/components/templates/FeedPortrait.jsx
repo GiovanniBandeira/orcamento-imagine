@@ -16,10 +16,6 @@ const FeedPortrait = forwardRef(({ modelName, themeName, sizes, painting, materi
         // --- DESIGN APENAS TEXTO (ESCURO/NEON) ---
         <>
           {/* Fundo Tech */}
-          <div className="absolute inset-0 opacity-10" style={{
-            backgroundImage: 'linear-gradient(#00FF55 1px, transparent 1px), linear-gradient(90deg, #00FF55 1px, transparent 1px)',
-            backgroundSize: '100px 100px'
-          }}></div>
           <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 w-[600px] h-[600px] bg-[#00FF55] opacity-10 blur-[200px] rounded-full"></div>
 
           {/* HEADER */}
@@ -56,7 +52,7 @@ const FeedPortrait = forwardRef(({ modelName, themeName, sizes, painting, materi
              <div className="flex-1 h-[2px] bg-[#ccc] ml-6"></div>
           </div>
 
-          <div className="flex-1 flex flex-col items-center w-full z-20 mt-12">
+          <div className="flex-1 flex flex-col items-center w-full z-20 mt-16">
               {/* Títulos centralizados com fonte ajustada */}
               <h2 className="text-[110px] leading-[0.9] text-[#333] text-center w-full px-10 break-words mb-4 uppercase">
                 {modelName}
@@ -70,13 +66,12 @@ const FeedPortrait = forwardRef(({ modelName, themeName, sizes, painting, materi
                 </div>
               )}
               
-              {/* Imagem do Produto (Quadro maior) */}
-              <div className="w-[900px] h-[650px] relative z-20 border-4 border-[#00FF55] shadow-[0_20px_60px_rgba(0,0,0,0.15)] bg-white p-4">
+              <div className="w-[850px] h-[600px] relative z-20 border-4 border-[#00FF55] shadow-[0_20px_60px_rgba(0,0,0,0.15)] bg-white p-4">
                 {imageSrc ? (
                     <img src={imageSrc} alt="Produto" className="w-full h-full object-contain" />
                 ) : (
                     <div className="w-full h-full bg-[#f1f1f1] flex items-center justify-center text-5xl text-gray-400 font-sans tracking-wide text-center px-10">
-                        IMAGEM CENTRAL (900x650)
+                        IMAGEM CENTRAL (850x600)
                     </div>
                 )}
               </div>
@@ -107,7 +102,7 @@ const FeedPortrait = forwardRef(({ modelName, themeName, sizes, painting, materi
                 </div>
              </div>
 
-             <div className="w-[2px] h-[150px] bg-[#111]/20 mx-4"></div>
+             <div className="w-[2px] h-[120px] bg-[#111]/20 mx-4"></div>
 
              {/* Chamada Final */}
              <div className="flex flex-col items-center justify-center flex-1 pr-4">

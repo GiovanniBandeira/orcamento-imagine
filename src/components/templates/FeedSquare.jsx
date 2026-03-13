@@ -12,11 +12,7 @@ const FeedSquare = forwardRef(({ modelName, themeName, sizes, painting, material
         height: '1080px',
       }}
     >
-      {/* Detalhes de Background (Grid ou linhas) para ficar Tech/3D */}
-      <div className="absolute inset-0 opacity-10" style={{
-        backgroundImage: 'linear-gradient(#00FF55 1px, transparent 1px), linear-gradient(90deg, #00FF55 1px, transparent 1px)',
-        backgroundSize: '100px 100px'
-      }}></div>
+      {/* Detalhes de Background sem quadriculado */}
 
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#00FF55] opacity-20 blur-[150px] rounded-full"></div>
       <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#00FF55] opacity-10 blur-[100px] rounded-full"></div>

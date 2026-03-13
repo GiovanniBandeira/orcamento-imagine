@@ -16,11 +16,6 @@ const StoryPortrait = forwardRef(({ modelName, themeName, sizes, painting, mater
         // --- DESIGN APENAS TEXTO (ESCURO/NEON) ---
         <>
           {/* Fundo Tech Vertical */}
-          <div className="absolute inset-0 opacity-[0.05]" style={{
-            backgroundImage: 'linear-gradient(#00FF55 2px, transparent 2px), linear-gradient(90deg, #00FF55 2px, transparent 2px)',
-            backgroundSize: '150px 150px'
-          }}></div>
-          
           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#00FF55] opacity-20 blur-[250px] rounded-full"></div>
           <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#00FF55] opacity-10 blur-[150px] rounded-full"></div>
 
@@ -63,26 +58,26 @@ const StoryPortrait = forwardRef(({ modelName, themeName, sizes, painting, mater
              <div className="flex flex-col gap-12 w-full px-4 pb-6 relative translate-y-[-100px]">
                 
                 <div className="flex flex-col items-center text-center">
-                   <p className="text-[#111] font-sans font-bold text-[18px] tracking-widest mb-1 opacity-80">TAMANHO</p>
-                   <p className="text-[#111] text-[40px] leading-none">{sizes}</p>
+                   <p className="text-[#111] font-sans font-bold text-[16px] tracking-widest mb-1 opacity-80">TAMANHO</p>
+                   <p className="text-[#111] text-[35px] leading-none">{sizes}</p>
                 </div>
                 <div className="w-[60%] h-[2px] bg-[#111]/20 mx-auto"></div>
 
                 <div className="flex flex-col items-center text-center">
-                   <p className="text-[#111] font-sans font-bold text-[18px] tracking-widest mb-1 opacity-80">PINTURA</p>
-                   <p className="text-[#111] text-[40px] leading-none">{painting}</p>
+                   <p className="text-[#111] font-sans font-bold text-[16px] tracking-widest mb-1 opacity-80">PINTURA</p>
+                   <p className="text-[#111] text-[35px] leading-none">{painting}</p>
                 </div>
                 <div className="w-[60%] h-[2px] bg-[#111]/20 mx-auto"></div>
 
                 <div className="flex flex-col items-center text-center">
-                   <p className="text-[#111] font-sans font-bold text-[18px] tracking-widest mb-1 opacity-80">MATERIAL</p>
-                   <p className="text-[#111] text-[40px] leading-none">{material}</p>
+                   <p className="text-[#111] font-sans font-bold text-[16px] tracking-widest mb-1 opacity-80">MATERIAL</p>
+                   <p className="text-[#111] text-[35px] leading-none">{material}</p>
                 </div>
                 <div className="w-[60%] h-[2px] bg-[#111]/20 mx-auto"></div>
 
-                <div className="flex flex-col items-center text-center">
-                   <p className="text-[#111] font-sans font-bold text-[18px] tracking-widest mb-1 opacity-80">CRIADOR</p>
-                   <p className="text-[#111] text-[40px] leading-none">{creatorName}</p>
+                <div className="flex flex-col items-center text-center pt-2">
+                   <p className="text-[#111] font-sans font-bold text-[16px] tracking-widest mb-1 opacity-80">CRIADOR</p>
+                   <p className="text-[#111] text-[35px] leading-none">{creatorName}</p>
                 </div>
 
              </div>
